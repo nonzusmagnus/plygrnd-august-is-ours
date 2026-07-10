@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PLYGRND — August Is Ours — Script</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0c0c0c;
+    --panel:#141414;
+    --lime:#d4ff3d;
+    --pink:#ff3d7f;
+    --cream:#f5f3ee;
+    --grey:#6f6f6a;
+    --line:#2a2a27;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--black);
+    color:var(--cream);
+    font-family:'Space Grotesk', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ===== HEADER / SLATE ===== */
+  .slate{
+    position:relative;
+    padding:64px 6vw 40px;
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+  }
+  .slate::before{
+    content:"";
+    position:absolute;
+    top:0; left:0; right:0; bottom:0;
+    background:
+      repeating-linear-gradient(115deg, rgba(212,255,61,0.035) 0px, rgba(212,255,61,0.035) 1px, transparent 1px, transparent 64px);
+    pointer-events:none;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--lime);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:22px;
+  }
+  .eyebrow .dot{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--pink);
+    box-shadow:0 0 12px var(--pink);
+  }
+  h1.title{
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    font-size:clamp(44px, 9vw, 108px);
+    line-height:0.92;
+    letter-spacing:0.01em;
+    margin:0;
+    text-transform:uppercase;
+    color:var(--cream);
+  }
+  h1.title span{
+    color:transparent;
+    -webkit-text-stroke:1.5px var(--lime);
+  }
+  .slate-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:28px 48px;
+    margin-top:34px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    color:var(--grey);
+    letter-spacing:0.03em;
+  }
+  .slate-meta strong{
+    color:var(--cream);
+    display:block;
+    font-size:11px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--grey);
+    margin-bottom:6px;
+    font-weight:500;
+  }
+  .slate-meta .val{color:var(--cream); font-size:14px;}
+
+  /* ===== RUNTIME BAR ===== */
+  .runtime{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:18px 6vw;
+    border-bottom:1px solid var(--line);
+    background:var(--panel);
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--grey);
+    letter-spacing:0.05em;
+  }
+  .runtime-track{
+    flex:1;
+    height:6px;
+    background:#232320;
+    border-radius:3px;
+    overflow:hidden;
+    display:flex;
+  }
+  .runtime-seg{ height:100%; }
+  .runtime-track .s1{width:8.9%; background:#ff3d7f;}
+  .runtime-track .s2{width:22.2%; background:#d4ff3d;}
+  .runtime-track .s3{width:26.7%; background:#3dd6ff;}
+  .runtime-track .s4{width:8.9%; background:#ff3d7f;}
+  .runtime-track .s5{width:13.3%; background:#d4ff3d;}
+  .runtime-track .s6{width:20%; background:#3dd6ff;}
+  .runtime .cap{color:var(--cream); font-weight:700;}
+
+  /* ===== SCRIPT BODY ===== */
+  .script{
+    max-width:920px;
+    margin:0 auto;
+    padding:0 6vw 100px;
+  }
+  .scene{
+    position:relative;
+    display:grid;
+    grid-template-columns:96px 1fr;
+    gap:0 28px;
+    padding:46px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .scene:last-child{border-bottom:none;}
+
+  .tc{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color:var(--grey);
+    padding-top:6px;
+  }
+  .tc .range{
+    color:var(--lime);
+    font-weight:700;
+    display:block;
+    font-size:14px;
+    margin-bottom:4px;
+  }
+  .tc .dur{
+    display:block;
+    color:var(--grey);
+  }
+
+  .scene-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    flex-wrap:wrap;
+    margin-bottom:6px;
+  }
+  .scene-num{
+    font-family:'Anton', sans-serif;
+    font-size:15px;
+    color:var(--pink);
+    letter-spacing:0.08em;
+  }
+  .scene-title{
+    font-family:'Anton', sans-serif;
+    font-size:clamp(24px,3.4vw,32px);
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    color:var(--cream);
+  }
+  .loc{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    color:var(--grey);
+    margin-bottom:20px;
+  }
+  .loc::before{content:"◎ ";color:var(--lime);}
+
+  .shot{
+    display:grid;
+    grid-template-columns:64px 1fr;
+    gap:14px;
+    margin-bottom:16px;
+    align-items:start;
+  }
+  .shot-id{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--grey);
+    padding-top:3px;
+  }
+  .shot-desc{
+    font-size:15px;
+    line-height:1.55;
+    color:#cfcdc4;
+  }
+  .shot-desc .beat{
+    color:var(--lime);
+    font-weight:600;
+  }
+
+  .line{
+    margin:14px 0 14px 78px;
+    padding:14px 18px;
+    background:var(--panel);
+    border-left:2px solid var(--pink);
+    border-radius:2px;
+  }
+  .line .who{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--pink);
+    margin-bottom:6px;
+  }
+  .line .txt{
+    font-size:17px;
+    font-weight:600;
+    color:var(--cream);
+    font-style:italic;
+  }
+  .line.alt{ border-left-color:var(--lime); }
+  .line.alt .who{ color:var(--lime); }
+
+  .note{
+    margin:18px 0 0 78px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    color:var(--grey);
+    line-height:1.6;
+    border-top:1px dashed var(--line);
+    padding-top:14px;
+  }
+  .note strong{color:var(--lime); font-weight:500;}
+
+  /* info card scene special */
+  .infocard{
+    margin-left:78px;
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    margin-top:14px;
+  }
+  .datepill{
+    font-family:'Anton', sans-serif;
+    font-size:20px;
+    padding:10px 20px;
+    border:1.5px solid var(--lime);
+    color:var(--lime);
+    border-radius:100px;
+    letter-spacing:0.02em;
+  }
+  .datepill.hero{
+    background:var(--lime);
+    color:var(--black);
+  }
+
+  /* footer */
+  .footer{
+    max-width:920px;
+    margin:0 auto;
+    padding:50px 6vw 90px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:24px;
+  }
+  .track{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--grey);
+  }
+  .track .val{color:var(--cream); font-size:15px; margin-top:4px;}
+  .tagline{
+    font-family:'Anton', sans-serif;
+    font-size:clamp(28px,4vw,42px);
+    text-transform:uppercase;
+    color:transparent;
+    -webkit-text-stroke:1.4px var(--cream);
+    letter-spacing:0.01em;
+  }
+
+  @media (max-width:640px){
+    .scene{grid-template-columns:1fr;}
+    .tc{padding-top:0; margin-bottom:10px; display:flex; gap:10px; align-items:baseline;}
+    .tc .range{margin-bottom:0;}
+    .shot{grid-template-columns:44px 1fr;}
+    .line, .note, .infocard{margin-left:0;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="slate">
+    <div class="eyebrow"><span class="dot"></span>PLYGRND · PRODUCTION SCRIPT · CUT LOCKED 45S</div>
+    <h1 class="title">August Is <span>Ours</span></h1>
+    <div class="slate-meta">
+      <div><strong>Runtime</strong><span class="val">45s max</span></div>
+      <div><strong>Talent</strong><span class="val">Dami · Kwamz</span></div>
+      <div><strong>Locations</strong><span class="val">Goat Bar, Goatstown · House of Padel</span></div>
+      <div><strong>Format</strong><span class="val">Vertical / Social</span></div>
+      <div><strong>Track</strong><span class="val">X — "Gon' Give It To Ya"</span></div>
+    </div>
+  </div>
+
+  <div class="runtime">
+    <span>0:00</span>
+    <div class="runtime-track">
+      <div class="runtime-seg s1"></div><div class="runtime-seg s2"></div><div class="runtime-seg s3"></div><div class="runtime-seg s4"></div><div class="runtime-seg s5"></div><div class="runtime-seg s6"></div>
+    </div>
+    <span class="cap">0:45</span>
+  </div>
+
+  <div class="script">
+
+    <!-- SCENE 1 -->
+    <div class="scene">
+      <div class="tc"><span class="range">0:00</span><span class="dur">→ 0:04</span></div>
+      <div>
+        <div class="scene-head"><span class="scene-num">SC.01</span><span class="scene-title">The Call Out</span></div>
+        <div class="loc">Open Field</div>
+
+        <div class="shot">
+          <div class="shot-id">1.1</div>
+          <div class="shot-desc"><span class="beat">Low angle shot</span> — Dami lying in army position, looking off-camera.</div>
+        </div>
+        <div class="line">
+          <div class="who">Dami</div>
+          <div class="txt">"So we really can't go home yet?"</div>
+        </div>
+
+        <div class="shot">
+          <div class="shot-id">1.2</div>
+          <div class="shot-desc">Kwamz <span class="beat">army-crawls</span> into frame beside him.</div>
+        </div>
+        <div class="line alt">
+          <div class="who">Kwamz</div>
+          <div class="txt">"Looks like it…"</div>
+        </div>
+
+        <div class="shot">
+          <div class="shot-id">1.3</div>
+          <div class="shot-desc">Dami stands. <span class="beat">Whip pan</span> reveals the building — Goat Bar, Goatstown.</div>
+        </div>
+        <div class="shot">
+          <div class="shot-id">1.4</div>
+          <div class="shot-desc"><span class="beat">Whip pan back</span> to Dami and Kwamz, walking toward the venue entrance.</div>
+        </div>
+
+        <div class="note">Shoot tight — no lingering. Lines land back to back, straight into the stand/whip pan. This scene carries the whole 4s budget.</div>
+      </div>
+    </div>
+
+    <!-- SCENE 2 -->
+    <div class="scene">
+      <div class="tc"><span class="range">0:04</span><span class="dur">→ 0:14</span></div>
+      <div>
+        <div class="scene-head"><span class="scene-num">SC.02</span><span class="scene-title">Day Party</span></div>
+        <div class="loc">Goat Bar, Goatstown</div>
+
+        <div class="shot">
+          <div class="shot-id">2.1</div>
+          <div class="shot-desc"><span class="beat">2D tracking shot</span> following Dami and Kwamz; models playing games, eating, vibing in background.</div>
+        </div>
+        <div class="line">
+          <div class="who">Dami (VO over action)</div>
+          <div class="txt">"We start off with a day party, fun games and a barbecue…"</div>
+        </div>
+        <div class="line alt">
+          <div class="who">Kwamz</div>
+          <div class="txt">"Free chops — I'm alive."</div>
+        </div>
+
+        <div class="shot">
+          <div class="shot-id">2.2</div>
+          <div class="shot-desc"><span class="beat">Quick-cut montage</span> — 3 to 4 flashes max: barbecue, one game beat, one crowd/vibe shot.</div>
+        </div>
+        <div class="shot">
+          <div class="shot-id">2.3</div>
+          <div class="shot-desc">Camera pushes into a wall as dialogue lands — <span class="beat">wall transition</span> into next scene.</div>
+        </div>
+
+        <div class="note">Dami's line runs as VO over the first montage flash, not as a standalone talking shot — this is what buys back the 2–3s needed to hit 10s total.</div>
+      </div>
+    </div>
+
+    <!-- SCENE 3 -->
+    <div class="scene">
+      <div class="tc"><span class="range">0:14</span><span class="dur">→ 0:26</span></div>
+      <div>
+        <div class="scene-head"><span class="scene-num">SC.03</span><span class="scene-title">Padel</span></div>
+        <div class="loc">House of Padel — wardrobe change</div>
+
+        <div class="shot">
+          <div class="shot-id">3.1</div>
+          <div class="shot-desc">Transition pan lands on venue entrance. Dami and Kwamz arrive in <span class="beat">new outfits.</span></div>
+        </div>
+        <div class="shot">
+          <div class="shot-id">3.2</div>
+          <div class="shot-desc"><span class="beat">Handheld</span> whip-pans to Kwamz.</div>
+        </div>
+        <div class="line alt">
+          <div class="who">Kwamz</div>
+          <div class="txt">"People been dying for padel again — let's do it!"</div>
+        </div>
+
+        <div class="shot">
+          <div class="shot-id">3.3</div>
+          <div class="shot-desc"><span class="beat">Gimbal pull-out</span> on Dami, landing as padel action is already in motion.</div>
+        </div>
+        <div class="line">
+          <div class="who">Dami</div>
+          <div class="txt">"Oh, we are so back!"</div>
+        </div>
+
+        <div class="shot">
+          <div class="shot-id">3.4</div>
+          <div class="shot-desc"><span class="beat">Quick montage</span> — 2 to 3 rally shots, models playing padel against each other.</div>
+        </div>
+        <div class="shot">
+          <div class="shot-id">3.5</div>
+          <div class="shot-desc">Montage closes on a model turning to camera.</div>
+        </div>
+        <div class="line">
+          <div class="who">Model</div>
+          <div class="txt">"So what we doing now?"</div>
+        </div>
+
+        <div class="note">Dami's line lands over the gimbal pull-out as padel is already live — don't hold before the action starts. Montage trims to 2–3 rallies only.</div>
+      </div>
+    </div>
+
+    <!-- SCENE 4 -->
+    <div class="scene">
+      <div class="tc"><span class="range">0:26</span><span class="dur">→ 0:30</span></div>
+      <div>
+        <div class="scene-head"><span class="scene-num">SC.04</span><span class="scene-title">The Announcement</span></div>
+        <div class="loc">House of Padel — foreground</div>
+
+        <div class="shot">
+          <div class="shot-id">4.1</div>
+          <div class="shot-desc">Cut to Dami and Kwamz in foreground — <span class="beat">break fourth wall</span>, speaking direct to camera.</div>
+        </div>
+        <div class="line">
+          <div class="who">Dami</div>
+          <div class="txt">"Another day party?"</div>
+        </div>
+        <div class="line alt">
+          <div class="who">Kwamz</div>
+          <div class="txt">"PLY'N all August!"</div>
+        </div>
+
+        <div class="note">Already efficient as scripted — keep pace snappy, back-to-back delivery.</div>
+      </div>
+    </div>
+
+    <!-- SCENE 5 -->
+    <div class="scene">
+      <div class="tc"><span class="range">0:30</span><span class="dur">→ 0:36</span></div>
+      <div>
+        <div class="scene-head"><span class="scene-num">SC.05</span><span class="scene-title">Info Card</span></div>
+        <div class="loc">Graphic overlay</div>
+
+        <div class="shot">
+          <div class="shot-id">5.1</div>
+          <div class="shot-desc">Transition to <span class="beat">branded information card.</span> VO plays simultaneously over the card — not sequentially.</div>
+        </div>
+        <div class="line">
+          <div class="who">Dami (VO)</div>
+          <div class="txt">"It's time to come home, PLYAS — 29th of August."</div>
+        </div>
+
+        <div class="infocard">
+          <div class="datepill">1ST</div>
+          <div class="datepill">22ND</div>
+          <div class="datepill hero">29TH</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCENE 6 -->
+    <div class="scene">
+      <div class="tc"><span class="range">0:36</span><span class="dur">→ 0:45</span></div>
+      <div>
+        <div class="scene-head"><span class="scene-num">SC.06</span><span class="scene-title">Sneak Peek / Sign Off</span></div>
+        <div class="loc">Open Field</div>
+
+        <div class="shot">
+          <div class="shot-id">6.1</div>
+          <div class="shot-desc"><span class="beat">Cinema sneak-peek style</span> — hard cut from black screen into shot. (~1s)</div>
+        </div>
+        <div class="shot">
+          <div class="shot-id">6.2</div>
+          <div class="shot-desc">Wide shot, group standing in open field, looking up. (~3s)</div>
+        </div>
+        <div class="shot">
+          <div class="shot-id">6.3</div>
+          <div class="shot-desc">Reveal — a <span class="beat">plane crosses the sky.</span> (~2s)</div>
+        </div>
+        <div class="shot">
+          <div class="shot-id">6.4</div>
+          <div class="shot-desc">Tagline card in, track stinger hits. (~3s)</div>
+        </div>
+
+        <div class="note"><strong>VFX flag:</strong> plane reveal to be planned as a comp/plate rather than a live capture — safer than relying on a timed real flyover.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div class="track">
+      <div>Closing Track</div>
+      <div class="val">X — "Gon' Give It To Ya"</div>
+    </div>
+    <div class="tagline">Let's PLY-GRND</div>
+  </div>
+
+</body>
+</html>
